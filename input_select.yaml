@@ -1,0 +1,54 @@
+  radio_station:
+    name: 'Select Radio Station:'
+    options:
+      - Radio 538
+      - Q-Music
+      - 3FM
+      - 100% NL
+      - Veronica
+      - Sky Radio
+      - Arrow Classic Rock
+      - Classic FM
+      - BNR Nieuwsradio
+      - SLAM! Hardstyle
+      - Sleep Radio
+      - Ambient Sleeping Pill
+      - Radio Art - Sleep
+      - Ambi Nature Radio
+      - Calm Radio - Sleep
+      - Dinamo.FM Sleep
+      - SRF3
+      - Rock Antenne
+      - Metal Rock
+      - Chronix Agression
+  chromecast_radio:
+    name: 'Select Speakers:'
+    options:
+      - Livingroom
+      - Bedroom
+      - Bathroom
+      - Hall
+      - Everywhere
+    initial: Everywhere
+    icon: mdi:speaker-wireless
+  air_purifier_mode:
+    name: Air Purifier Mode
+    options:
+      - N/A
+      - Auto
+      - Sleep
+      - Favorite
+    initial: N/A
+    icon: mdi:target
+  log_level:
+    name: Log Level
+    options:
+      - critical
+      - fatal
+      - error
+      - warning
+      - warn
+      - info
+      - debug
+      - notset
+    initial: warn

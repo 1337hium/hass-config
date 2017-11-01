@@ -1,0 +1,270 @@
+default_view:
+  view: true
+  icon: mdi:home
+  entities:
+  - switch.sonoffbasic
+  - media_player.plex_web_chrome
+  - binary_sensor.xiaomi
+  - group.mi_air_pro
+  - scene.Gute_Nacht
+  - scene.Guten_Morgen
+  - group.wetter
+  - group.family
+  - group.temperaturen
+  - camera.michu
+  - group.cast
+  - group.Residence_Radio
+  - group.multisensor1
+  - calendar.allgemein
+  - image_processing.dlib_face_mqtt
+  - hello.world
+licht:
+  name: Licht
+  icon: mdi:lightbulb
+  view: true
+  entities:
+  - input_number.strip_animation_speed
+  - light.led_strip
+  - fan.michus_air_purifier_2
+  - script.toggle_buero
+  - light.bad
+  - light.buero
+  - light.kueche
+  - light.schlafzimmer
+  - group.kitchen
+  - light.stube_alles
+  - light.5ccf7fab6164_192168173
+  - switch.wall_switch_158d00014ca4c4
+  - switch.sonoff
+  - light.main_gateway
+  - light.sn1_led
+  - light.bett_led
+  - light.badvorne
+  - light.bad_vorne_json
+dev1:
+  name: Develop
+  view: true
+  entities:
+  - group.devgroup
+prisca:
+  icon: mdi:account
+  name: Prisca
+  view: true
+  entities:
+  - script.stop_scripts
+  - script.bad_vorne_loop1
+  - automation.licht_wenn_ich_komme
+  - automation.licht_wenn_ich_zuhause_bin
+  - automation.licht_aus_wenn_niemand_zuhause
+  - automation.bewegung_buero_2
+  - automation.bewegung_stube_2
+3d:
+  view: true
+  icon: mdi:printer-3d
+  name: 3D Drucker
+  entities:
+  - group.3dprint
+  - group.edimax
+  - camera.3d_drucker
+  - image_processing.microsoftface_mqtt
+#  - image_processing.dlib_face_mqtt
+#  - image_processing.detect_face
+#  - image_processing.mqtt
+#  - image_processing.dlib_face_mqtt_2
+michu1:
+  icon: mdi:crown
+  entities:
+  - switch.wall_switch_158d00014ca4c4
+  - switch.monitore_michu
+  - switch.monitore_michu
+  - group.loglevel1
+  - group.michupresence
+  - light.5ccf7fab6164_192168181
+  - group.battery
+  - group.ups
+  - group.motion
+  - group.xiaomi
+  - group.temperaturen
+  - group.edimax
+  - switch.bad
+  - switch.stube
+  - light.3d
+  - group.speedtest1
+  - camera.mqtt
+  name: Michu
+  view: true
+Kamera:
+  icon: mdi:camcorder
+  name: Kamera
+  view: true
+  entities:
+  - camera.axis_cam
+  - camera.estrich
+  - camera.3d_drucker
+  - camera.balkon
+  - camera.platz
+  - camera.hinten
+speedtest1:
+  name: Netstat
+  entities:
+  - sensor.speedtest_upload
+  - sensor.speedtest_download
+  - sensor.speedtest_ping
+  view: false
+kitchen:
+  name: Stube
+  entities:
+  - light.Links
+  - light.Rechts
+  - light.Mitte_Links
+  - light.Mitte_Rechts
+family:
+  name: Family
+  entities:
+  - device_tracker.prisca
+  - device_tracker.michu_u
+Stube:
+  icon: mdi:sofa
+  name: Stube
+  view: true
+  entities:
+  - fan.michus_air_purifier_2
+  - group.kitchen
+  - remote.Stube
+drive_times:
+  name: Driving Times
+  entities:
+  - sensor.home_to_work
+  - sensor.work_to_home
+wetter:
+  name: Wetter
+  entities:
+  - sensor.pws_weather
+  - sensor.pws_feelslike_c
+  - sensor.pws_alerts
+  - sensor.pws_location
+temperaturen:
+  name: Temperaturen
+  entities:
+  - sensor.unnamed_device
+  - sensor.unnamed_device_1
+michupresence:
+  name: Michu
+  entities:
+  - device_tracker.michu_u
+3dprint:
+  name: 3D Print
+  entities:
+  - sensor.octoprint_current_state
+  - sensor.octoprint_actual_bed_temp
+  - sensor.octoprint_target_bed_temp
+  - sensor.octoprint_actual_tool0_temp
+  - sensor.octoprint_target_tool0_temp
+  - sensor.octoprint_job_percentage
+xiaomi:
+  name: Xiaomi
+  entities:
+  - light.gateway_light_f0b429cfae54
+  - binary_sensor.smoke_sensor_158d000130e9df
+  - sensor.illuminance_f0b429cfae54
+  - sensor.humidity_158d0001217329
+  - sensor.temperature_158d0001217329
+  - sensor.humidity_158d000156e658
+  - sensor.temperature_158d000156e658
+  - sensor.humidity_158d000159ee45
+  - sensor.temperature_158d000159ee45
+  - binary_sensor.door_window_sensor_158d0001a4a3dc
+  view: false
+edimax:
+  name: Edimax
+  entities:
+  - switch.edimax1
+  - sensor.edimax1_watts
+alarmclock:
+  icon: mdi:clock-alert
+  name: Wake Me Up
+  entities:
+  - sensor.alarm_time
+  - input_number.alarmhour
+  - input_number.alarmmins
+  - input_boolean.alarmstatus
+  - input_boolean.alarmweekday
+  - sensor.alarm_time_fin
+  - input_number.alarmfinishhr
+  - input_number.alarmfinishmins
+alrmclock:
+  icon: mdi:clock-alert
+  name: Wake Me Up!
+  view: true
+  entities:
+  - group.alarmclock
+licht1:
+  name: Licht alle
+  entities:
+  - script.toggle_buero
+  - light.bad
+  - light.buero
+  - light.kueche
+  - light.schlafzimmer
+  - group.kitchen
+  - light.gateway_light_f0b429cfae54
+motion:
+  name: Motion
+  entities:
+  - binary_sensor.motion_sensor_158d000155e030
+  - binary_sensor.motion_sensor_158d000112de28
+ups:
+  name: UPS
+  entities:
+  - sensor.ups
+battery:
+  name: Battery
+  entities:
+  - sensor.battery_schmichu
+  - sensor.battery_schprisca
+  - sensor.battery_schkueche
+  - sensor.battery_motuer
+  - sensor.battery_mogang
+cast:
+  name: Cast
+  entities:
+  - media_player.chromecastaudio8898
+Residence Radio:
+  name: Residentie Radio
+  entities:
+  - input_select.radio_station
+  - input_select.chromecast_radio
+  - script.radio538
+  - input_number.volume_radio
+multisensor1:
+  name: Multisensor
+  entities:
+  - sensor.sn1_ldr
+  - sensor.sn1_pir 
+  - sensor.sn1_humidity
+  - sensor.sn1_temperature
+  - sensor.sn1_real_feel
+  - sensor.luftqualitat
+  - sensor.lpg
+  - sensor.co
+  - sensor.smoke
+mi_air_pro:
+  name: "Xiaomi Mi Air"
+  control: hidden
+  entities:
+  - sensor.xiaomi_luftqualitat
+  - sensor.command_sensor
+  - switch.air_purifier
+  - input_select.air_purifier_mode
+  - sensor.luftqualitat_xiaomi
+  - sensor.airquality
+  - sensor.purifiermode
+  - sensor.purifierfilter
+loglevel1:
+  name: "Log Level"
+  entities:
+  - input_select.log_level
+devgroup:
+  name: devgroup
+  entities:
+  - sensor.comp_uptime

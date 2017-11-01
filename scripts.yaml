@@ -1,0 +1,140 @@
+radio538:
+  alias: Play Radio on Chromecast Audio
+  sequence:
+  - service: media_player.volume_set
+    data:
+      entity_id: media_player.chromecastaudio8898
+      volume_level: '0.35'
+  - service: media_player.volume_set
+    data:
+      entity_id: media_player.ca_bathroom
+      volume_level: '0.20'
+  - service: media_player.volume_set
+    data:
+      entity_id: media_player.ca_livingroom
+      volume_level: '0.30'
+  - service: media_player.play_media
+    data_template:
+      entity_id: '{% if is_state("input_select.chromecast_radio", "Livingroom") %}
+        media_player.chromecastaudio8898 {% elif is_state("input_select.chromecast_radio",
+        "Hall") %} media_player.ca_hall {% elif is_state("input_select.chromecast_radio",
+        "Bedroom") %} media_player.bed_room {% elif is_state("input_select.chromecast_radio",
+        "Bathroom") %} media_player.ca_bathroom {% elif is_state("input_select.chromecast_radio",
+        "Everywhere") %} media_player.home_group {% endif %}
+
+        '
+      media_content_id: '{% if is_state("input_select.radio_station", "Radio 538")
+        %} http://vip-icecast.538.lw.triple-it.nl:80/RADIO538_MP3 {% elif is_state("input_select.radio_station",
+        "Q-Music") %} http://icecast-qmusic.cdp.triple-it.nl/Qmusic_nl_live_96.mp3
+        {% elif is_state("input_select.radio_station", "3FM") %} http://icecast.omroep.nl/3fm-bb-mp3
+        {% elif is_state("input_select.radio_station", "100% NL") %} http://stream.100p.nl/100pctnl.mp3
+        {% elif is_state("input_select.radio_station", "Veronica") %} http://8543.live.streamtheworld.com/VERONICACMP3
+        {% elif is_state("input_select.radio_station", "Sky Radio") %} http://8623.live.streamtheworld.com:80/SKYRADIOAAC_SC
+        {% elif is_state("input_select.radio_station", "Arrow Classic Rock") %} http://91.221.151.155/listen.mp3
+        {% elif is_state("input_select.radio_station", "Classic FM") %} http://19143.live.streamtheworld.com/CLASSICFM_SC
+        {% elif is_state("input_select.radio_station", "BNR Nieuwsradio") %} http://icecast-bnr.cdp.triple-it.nl/bnr_mp3_96_03
+        {% elif is_state("input_select.radio_station", "SLAM! Hardstyle") %} http://vip-icecast.538.lw.triple-it.nl/WEB17_MP3
+        {% elif is_state("input_select.radio_station", "Sleep Radio") %} http://37.59.28.208:8722/stream
+        {% elif is_state("input_select.radio_station", "Ambient Sleeping Pill") %}
+        http://perseus.shoutca.st:8447/h {% elif is_state("input_select.radio_station",
+        "Radio Art - Sleep") %} http://live.radioart.com/fSleep.mp3 {% elif is_state("input_select.radio_station",
+        "Ambi Nature Radio") %} http://94.23.252.14:8067/stream {% elif is_state("input_select.radio_station",
+        "Calm Radio - Sleep") %} http://streams.calmradio.com/api/39/128/stream {%
+        elif is_state("input_select.radio_station", "Dinamo.FM Sleep") %} http://channels.dinamo.fm/sleep-aac
+        {% elif is_state("input_select.radio_station", "SRF3") %} http://stream.srg-ssr.ch/m/drs3/mp3_128
+        {% elif is_state("input_select.radio_station", "Rock Antenne") %} http://mp3channels.webradio.rockantenne.de/rockantenne
+        {% elif is_state("input_select.radio_station", "Metal Rock") %} http://149.56.23.7:20052/stream
+        {% elif is_state("input_select.radio_station", "Chronix Agression") %} https://usa17.fastcast4u.com/proxy/gebacher?mp=/1
+        {% endif %}
+
+        '
+      media_content_type: audio/mp4
+buero:
+  alias: Bewegung Buero
+  sequence:
+  - service: script.turn_off
+    data:
+      entity_id: script.timer_off
+  - service: light.turn_on
+    data:
+      entity_id: light.buero
+  - service: script.turn_on
+    data:
+      entity_id: script.timer_off
+timer_off:
+  alias: "Turn off light after 1 min no motion"
+  sequence:
+    - delay:
+        minutes: 10
+    - service: light.turn_off
+      data: 
+        entity_id: light.buero
+bad_vorne:
+  alias: Bad vorne
+  sequence:
+  - service: script.turn_off
+    data:
+      entity_id: script.timer_off
+  - service: light.turn_on
+    data:
+      entity_id: light.bad_vorne_json
+  - service: script.turn_on
+    data:
+      entity_id: script.timer_off
+bad_vorne_loop1:
+  alias: "bad vorne loop1"
+  sequence:
+    # Cancel current script
+  - service_template: > 
+      {% if (not is_state('binary_sensor.motion_sensor_158d000155e030', 'on'))  %}light.turn_off{% else %}light.turn_on{% endif %}
+    data:
+      entity_id: light.bad_vorne_json
+    # Set new timer
+  - service: script.turn_on
+    data:
+      entity_id: script.bad_vorne_loop1
+  - service: script.turn_on
+    data:
+      entity_id: script.light_loop
+light_loop:
+  alias: Light flash loop
+  sequence:
+    - delay:
+        # time for flash light off
+        seconds: 1
+    - service: script.turn_on
+      data:
+        entity_id: script.bad_vorne_loop1
+stop_scripts:
+  alias: "Stoppt alle licht scripts"
+  sequence:
+  - service: script.turn_off
+    data:
+      entity_id: script.bad_vorne_loop1
+  - service: script.turn_off
+    data:
+      entity_id: script.light_loop
+kueche_loop1:
+  alias: "kueche loop1"
+  sequence:
+    # Cancel current script
+  - service_template: >
+      {% if (not is_state('binary_sensor.motion_sensor_158d000113d0ff', 'on'))  %}light.turn_off{% else %}light.turn_on{% endif %}
+    data:
+      entity_id: light.kueche
+    # Set new timer
+#  - service: script.turn_on
+#    data:
+#      entity_id: script.kueche_loop1
+  - service: script.turn_on
+    data:
+      entity_id: script.light_loop1
+light_loop1:
+  alias: Light flash loop
+  sequence:
+    - delay:
+        # time for flash light off
+        seconds: 1
+    - service: script.turn_on
+      data:
+        entity_id: script.kueche_loop1

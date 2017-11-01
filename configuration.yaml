@@ -1,0 +1,751 @@
+homeassistant:
+  name: Home
+  latitude: !secret lati
+  longitude: !secret longi
+  elevation: 475
+  unit_system: metric
+  time_zone: Europe/Zurich
+  customize: !include customize.yaml
+map:
+frontend:
+  themes:
+    dark:
+      primary-color: black
+    darkred:
+      dark-primary-color: "#c66900"
+      disabled-text-color: "#545454"
+      divider-color: "rgba(255, 255, 255, 0.12)"
+      light-primary-color: "#e06c6c"
+      paper-card-background-color: "#1d1d1d"
+      paper-grey-200: "#191919"
+      paper-item-icon-color: "#d3d3d3"
+      paper-listbox-background-color: "#202020"
+      primary-background-color: "#303030"
+      primary-color: "#d32f2f"
+      primary-text-color: "#cfcfcf"
+      secondary-background-color: "#131313"
+      sidebar-text_-_background: "#62717b" 
+      paper-card-header-color: "var(--paper-item-icon-color)" 
+      paper-item-icon-active-color: "var(--primary-color)"
+      paper-item-icon_-_color: "var(--primary-text-color)"
+      paper-listbox-color: "var(--primary-text-color)"
+      paper-grey-50: "var(--primary-text-color)"
+      paper-slider-active-color: "var(--primary-color)"
+      paper-slider-knob-color: "var(--primary-color)"
+      paper-slider-knob-start-color: "var(--primary-color)"
+      paper-slider-pin-color: "var(--primary-color)"
+      paper-slider-secondary-color: "var(--light-primary-color)"
+      paper-toggle-button-checked-ink-color: "var(--dark-primary-color)"
+      paper-toggle-button-checked-button-color: "var(--primary-color)"
+      paper-toggle-button-checked-bar-color: "var(--light-primary-color)"
+      paper-toggle-button-unchecked-bar-color: "var(--primary-text-color)"
+      secondary-text-color: "var(--primary-color)"
+      table-row-background-color: "var(--paper-card-background-color)"
+      table-row-alternative-background-color: "var(--sidebar-text_-_background)"
+config:
+http:
+   api_password: !secret normal_pw
+
+updater:
+recorder:
+  db_url: !secret mysql_url
+  include:
+    domains:
+      - sensor
+      - switch
+      - media_player
+      - light
+discovery:
+panel_custom:
+  - name: floorplan
+    sidebar_title: Floorplan
+    sidebar_icon: mdi:home
+    url_path: floorplan
+    config: !include floorplan.yaml
+logger:
+  default: critical
+  logs:
+    homeassistant.components.sensor.luftqualitat: critical
+    homeassistant.components.mqtt: critical
+    homeassistant.components.state: critical
+
+influxdb:
+  host: 127.0.0.1
+
+calendar:
+  - platform: caldav
+    url: !secret dav_url
+    user: '1337hium'
+    password: !secret normal_pw
+    cert_path: false
+    entities:
+      - cal_id: Allgemein
+        sensors:
+          - device_id: Allgemein
+            name: Kalender
+            track: True
+
+shell_command:
+  miair_auto: sudo miio --control 192.168.1.215 --method set_mode --params '["auto"]'
+  miair_sleep: sudo miio --control 192.168.1.215 --method set_mode --params '["silent"]'
+  miair_favorite: sudo miio --control 192.168.1.215 --method set_mode --params '["favorite"]'
+  foto: sudo python /home/homeassistant/.homeassistant/push.py
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time.
+history:
+
+# View all events in a logbook
+logbook:
+
+# Track the sun
+sun:
+
+# Weather Prediction
+
+media_player:
+  - platform: cast
+  - platform: plex
+xiaomi_aqara:
+ gateways:
+   - mac: 
+     key: !secret gw_michu
+   - mac:
+     key: !secret gw_daniel 
+# interface: 192.168.1.102
+octoprint:
+  host: 192.168.1.251
+  api_key: !secret octo_key
+
+###########################################  
+##Groups                                  #
+###########################################
+group: !include groups.yaml
+
+###########################################
+##Light                                   #
+###########################################
+light: !include light.yaml
+
+device_tracker:
+  - platform: owntracks
+    max_gps_accuracy: 200
+    track_new_devices: true
+ #   waypoints: True
+  - platform: nmap_tracker
+    hosts: 192.168.1.1/24
+    track_new_devices: false
+#    waypoint_whitelist:
+#      - Michu
+  - platform: mqtt_json
+    devices:
+      michu_u: zanzito/htcu/location
+###########################################
+##Zones                                   #
+###########################################
+mqtt:
+  broker: mqtt.1337hium.ch 
+  port: 1883
+  username: !secret normal_user
+  password: !secret normal_pw
+  protocol: 3.1
+
+zone:
+  name: Work
+  latitude: !secret work_lati 
+  longitude: !secret work_longi
+
+zone 2:
+  name: Home
+  latitude: !secret lati
+  longitude: !secret longi
+  radius: 20
+  icon: mdi:account-multiple
+zone 3:
+  name: Kaech
+  latitude: !secret kaech_lati 
+  longitude: !secret kaech_longi 
+  radius: 20
+
+###########################################
+##Weather                                 #
+###########################################
+weather:
+  - platform: openweathermap
+    api_key: !secret owm_key 
+    latitude: !secret lati
+    longitude: !secret longi
+
+###########################################
+##Camera                                  #
+###########################################
+camera:
+  - platform: mqtt
+    name: mqtt
+    topic: zanzito/htcu/picture
+
+notify:
+  - name: HASS
+    platform: pushover
+    api_key: !secret pushover_api
+    user_key: !secret pushover_user
+  - platform: pushbullet
+    name: michu
+    api_key: !secret pushbullet_michu 
+  - platform: pushbullet
+    name: daniel
+    api_key: !secret pushbullet_daniel 
+  - name: HTML5
+    platform: html5
+    gcm_api_key: !secret html5_api
+    gcm_sender_id: !secret html5_sender
+automation: !include automations.yaml
+sensor:
+  - platform: template
+    sensors:
+      battery_status:
+        friendly_name: "Battery Status"
+        entity_id:
+        - input_boolean.battery_status_update
+        value_template: >
+          {%- set threshold = 15 -%}
+          {%- set domains = ['light', 'switch', 'sensor', 'zwave', 'lock'] -%}
+          {%- for domain in domains -%}
+          {%- for item in states[domain] if ((item.attributes.battery_level is defined and item.attributes['battery_level'] | int < threshold) or ("battery" in item.name | lower and ((item.state | int < threshold and item.state|int != 0) or item.state | lower == "low" or item.state | lower == "unknown"))) -%}
+          {%- if (item.attributes.battery_level is defined and item.attributes['battery_level'] | int < threshold) -%}
+          {{ item.name }} ({{ item.attributes['battery_level'] }}){%- if not loop.last %}, {% endif -%}{% endif -%}
+          {%- if "battery" in item.name | lower and ((item.state | int < threshold and item.state|int != 0) or item.state | lower == "low" or item.state | lower == "unknown") -%}
+          {{ item.name }} ({{ item.state }}){%- if not loop.last %}, {% endif -%} {% endif -%}
+          {%- endfor -%}
+          {%- endfor -%}
+  - platform: pushbullet
+    api_key: !secret pushbullet_michu
+    monitored_conditions:
+      - body
+  - platform: example
+  - platform: mqtt
+    state_topic: "bruh2/mq2"
+    name: "LPG"
+    unit_of_measurement: "ppm"    
+    value_template: '{{ value_json.lpg | round(1) }}'
+  - platform: mqtt
+    state_topic: "bruh2/mq2"
+    name: "CO"
+    unit_of_measurement: "ppm"
+    value_template: '{{ value_json.co | round(1) }}'
+  - platform: mqtt
+    state_topic: "bruh2/mq2"
+    name: "Smoke"
+    unit_of_measurement: "ppm"
+    value_template: '{{ value_json.smoke | round(1) }}'
+  - platform: mqtt
+    state_topic: "bild/bild"
+    name: "SN2 PIR"
+    value_template: '{{ value_json.motion }}'
+  - platform: command_line
+    command: sudo miio --control 192.168.1.215 --method get_prop --params '["mode"]' | awk 'NR==5' | cut -d "\"" -f2
+  - platform: command_line
+    name: "Xiaomi Luftqualität"
+    command: sudo miio --control 192.168.1.215 --method get_prop --params '["aqi"]' | sed -n '5p' | cut -d " " -f3
+    # If errors occur, remove degree symbol below
+    unit_of_measurement: "PM2.5"
+  - platform: mqtt
+    state_topic: "bruh1/sensornode1"
+    name: "Luftqualität"
+    unit_of_measurement: "ppm"
+    value_template: '{{ value_json.airquality | round(1) }}'
+  - platform: mqtt
+    state_topic: "stat/sonoff/RESULT"
+    name: "Sonoff US"
+    value_template: '{{ value_json.POWER }}'
+  - platform: mqtt  
+    state_topic: "bruh/sensornode1"  
+    name: "SN1 PIR"  
+    value_template: '{{ value_json.motion }}' 
+  - platform: mqtt  
+    state_topic: "bruh/sensornode1"  
+    name: "SN1 LDR"
+    ##This sensor is not calibrated to actual LUX. Rather, this a map of the input voltage ranging from 0 - 1023.
+    unit_of_measurement: "LUX"  
+    value_template: '{{ value_json.ldr }}' 
+  - platform: mqtt  
+    state_topic: "bruh/sensornode1"  
+    name: "SN1 Humidity"  
+    unit_of_measurement: "%"  
+    value_template: '{{ value_json.humidity | round(1) }}'  
+  - platform: mqtt  
+    state_topic: "bruh/sensornode1"  
+    name: "SN1 Temperature"  
+    unit_of_measurement: "°C"  
+    value_template: '{{ value_json.temperature | round(1) }}'  
+  - platform: mqtt
+    state_topic: "bruh/sensornode1"
+    name: "SN1 Real Feel"
+    unit_of_measurement: "°C"
+    value_template: '{{ value_json.heatIndex | round(1) }}'
+  - platform: template
+    sensors:
+      airquality:
+       friendly_name: 'Airquality Xiaomi'
+       value_template: '{{ states.fan.michus_air_purifier_2.attributes.aqi }}'
+       unit_of_measurement: "PM2.5"
+      purifiermode:
+       friendly_name: 'Airquality Xiaomi'
+       value_template: '{{ states.fan.michus_air_purifier_2.attributes.mode }}'
+      purifierfilter:
+       friendly_name: 'Airquality Xiaomi'
+       value_template: '{{ states.fan.michus_air_purifier_2.attributes.filter_life_remaining }}'
+       unit_of_measurement: "%"
+      alarm_hour:
+        value_template: '{{ states("input_number.alarmhour") | round(0) }}'
+      alarm_minutes:
+        value_template: '{{ states("input_number.alarmmins") | round(0) }}'
+      alarm_time:
+        friendly_name: 'Time'
+        value_template: '{% if states("sensor.alarm_hour")|length == 1 %}0{% endif %}{{ states("sensor.alarm_hour") }}:{% if states("sensor.alarm_minutes")|length == 1 %}0{% endif %}{{ states("sensor.alarm_minutes") }}'
+      alarm_hour_fin:
+        value_template: '{{ states("input_number.alarmfinishhr") | round(0) }}'
+      alarm_minutes_fin:
+        value_template: '{{ states("input_number.alarmfinishmins") | round(0) }}'
+      alarm_time_fin:
+        friendly_name: 'FinTime'
+        value_template: '{% if states("sensor.alarm_hour_fin")|length == 1 %}0{% endif %}{{ states("sensor.alarm_hour_fin") }}:{% if states("sensor.alarm_minutes_fin")|length == 1 %}0{% endif %}{{ states("sensor.alarm_minutes_fin") }}'
+      battery_schmichu:
+        friendly_name: 'Knopf Michu'
+        unit_of_measurement: '%'
+        value_template: >
+            {%- if states.binary_sensor.switch_158d0001105ab6.attributes.battery_level %}
+                {{ states.binary_sensor.switch_158d0001105ab6.attributes.battery_level|round }}
+            {% else %}
+                {{ states.sensor.battery_schmichu.state }}
+            {%- endif %}
+        icon_template: '{%- if is_state("sensor.battery_schmichu", "unknown") %}mdi:battery-unknown{%- elif is_state_attr("binary_sensor.switch_158d0001105ab6", "battery_status", "Charging") %}mdi:battery-charging{%- elif  states.binary_sensor.switch_158d0001105ab6.attributes.battery_level <= 5 %}mdi:battery-outline{%- elif states.binary_sensor.switch_158d0001105ab6.attributes.battery_level >= 95 %}mdi:battery{% else %}mdi:battery-{{(states.binary_sensor.switch_158d0001105ab6.attributes.battery_level|float / 10)|round*10}}{%- endif %}'
+      battery_schprisca:
+        friendly_name: 'Knopf Prisca'
+        unit_of_measurement: '%'
+        value_template: >
+            {%- if states.binary_sensor.switch_158d000125652d.attributes.battery_level %}
+                {{ states.binary_sensor.switch_158d000125652d.attributes.battery_level|round }}
+            {% else %}
+                {{ states.sensor.battery_schprisca.state }}
+            {%- endif %}
+        icon_template: '{%- if is_state("sensor.battery_schprisca", "unknown") %}mdi:battery-unknown{%- elif is_state_attr("binary_sensor.switch_158d000125652d", "battery_status", "Charging") %}mdi:battery-charging{%- elif  states.binary_sensor.switch_158d000125652d.attributes.battery_level <= 5 %}mdi:battery-outline{%- elif states.binary_sensor.switch_158d000125652d.attributes.battery_level >= 95 %}mdi:battery{% else %}mdi:battery-{{(states.binary_sensor.switch_158d000125652d.attributes.battery_level|float / 10)|round*10}}{%- endif %}'
+      battery_schkueche:
+        friendly_name: 'Knopf Küche'
+        unit_of_measurement: '%'
+        value_template: >
+            {%- if states.binary_sensor.switch_158d00013f7fda.attributes.battery_level %}
+                {{ states.binary_sensor.switch_158d00013f7fda.attributes.battery_level|round }}
+            {% else %}
+                {{ states.sensor.battery_schkueche.state }}
+            {%- endif %}
+        icon_template: '{%- if is_state("sensor.battery_schkueche", "unknown") %}mdi:battery-unknown{%- elif is_state_attr("binary_sensor.switch_158d00013f7fda", "battery_status", "Charging") %}mdi:battery-charging{%- elif  states.binary_sensor.switch_158d00013f7fda.attributes.battery_level <= 5 %}mdi:battery-outline{%- elif states.binary_sensor.switch_158d00013f7fda.attributes.battery_level >= 95 %}mdi:battery{% else %}mdi:battery-{{(states.binary_sensor.switch_158d00013f7fda.attributes.battery_level|float / 10)|round*10}}{%- endif %}'
+      battery_motuer:
+        friendly_name: 'Sensor Tür'
+        unit_of_measurement: '%'
+        value_template: >
+            {%- if states.binary_sensor.motion_sensor_158d000112de28.attributes.battery_level %}
+                {{ states.binary_sensor.motion_sensor_158d000112de28.attributes.battery_level|round }}
+            {% else %}
+                {{ states.sensor.battery_motuer.state }}
+            {%- endif %}
+        icon_template: '{%- if is_state("sensor.battery_motuer", "unknown") %}mdi:battery-unknown{%- elif is_state_attr("binary_sensor.motion_sensor_158d000112de28", "battery_status", "Charging") %}mdi:battery-charging{%- elif  states.binary_sensor.motion_sensor_158d000112de28.attributes.battery_level <= 5 %}mdi:battery-outline{%- elif states.binary_sensor.motion_sensor_158d000112de28.attributes.battery_level >= 95 %}mdi:battery{% else %}mdi:battery-{{(states.binary_sensor.motion_sensor_158d000112de28.attributes.battery_level|float / 10)|round*10}}{%- endif %}'
+      battery_mogang:
+        friendly_name: 'Sensor Gang'
+        unit_of_measurement: '%'
+        value_template: >
+            {%- if states.binary_sensor.motion_sensor_158d000155e030.attributes.battery_level %}
+                {{ states.binary_sensor.motion_sensor_158d000155e030.attributes.battery_level|round }}
+            {% else %}
+                {{ states.sensor.battery_mogang.state }}
+            {%- endif %}
+        icon_template: '{%- if is_state("sensor.battery_mogang", "unknown") %}mdi:battery-unknown{%- elif is_state_attr("binary_sensor.motion_sensor_158d000155e030", "battery_status", "Charging") %}mdi:battery-charging{%- elif  states.binary_sensor.motion_sensor_158d000155e030.attributes.battery_level <= 5 %}mdi:battery-outline{%- elif states.binary_sensor.motion_sensor_158d000155e030.attributes.battery_level >= 95 %}mdi:battery{% else %}mdi:battery-{{(states.binary_sensor.motion_sensor_158d000155e030.attributes.battery_level|float / 10)|round*10}}{%- endif %}'
+
+  - platform: wunderground
+    api_key: !secret wunder_api 
+    lang: DL
+    monitored_conditions:
+      - alerts
+      - dewpoint_c
+      - dewpoint_f
+      - dewpoint_string
+      - feelslike_c
+      - feelslike_f
+      - feelslike_string
+      - heat_index_c
+      - heat_index_f
+      - heat_index_string
+      - elevation
+      - location
+      - observation_time
+      - precip_1hr_in
+      - precip_1hr_metric
+      - precip_1hr_string
+      - precip_today_in
+      - precip_today_metric
+      - precip_today_string
+      - pressure_in
+      - pressure_mb
+      - pressure_trend
+      - relative_humidity
+      - station_id
+      - solarradiation
+      - temperature_string
+      - temp_c
+      - temp_f
+      - UV
+      - visibility_km
+      - visibility_mi
+      - weather
+      - wind_degrees
+      - wind_dir
+      - wind_gust_kph
+      - wind_gust_mph
+      - wind_kph
+      - wind_mph
+      - wind_string
+  - platform: octoprint
+    name: OctoPrint
+    monitored_conditions:
+      - Current State
+      - Temperatures
+      - Job Percentage
+  - platform: template
+    sensors:
+      edimax1_watts:
+        value_template: '{{ states.switch.edimax1.attributes["current_power_mwh"] | float * 1000000 | round(2) }}'
+        unit_of_measurement: 'W'
+remote:
+  - platform: harmony
+    name: Stube
+    view: no
+    host: 192.168.1.40
+    activity: Fernsehen
+  - platform: mqtt
+    state_topic: "domoticz/in"
+    name: "Luftfeuchtigkeit Analog"
+    unit_of_measurement: "%"
+    value_template: '{{ value_json.svalue }}'
+sensor speed:
+  - platform: speedtest
+    minute:
+      - 0
+      - 30
+    monitored_conditions:
+      - ping
+      - download
+      - upload
+  - platform: template
+    sensors:
+      stube:
+        value_template: '{{ states.remote.stube.attributes.current_activity }}'
+        friendly_name: 'Stube'
+
+
+
+
+sensor yr:
+    - platform: yr
+emulated_hue:
+  type: google_home
+  off_maps_to_on_domains:
+    - script
+    - scene
+  expose_by_default: true
+  listen_port: 80
+  exposed_domains:
+    - light
+scene:
+  - name: Stube Hell
+    entities:
+        light.Rechts:
+            state: on
+            transition: 2
+            brightness: 255
+            rgb_color: [255, 255, 255]  
+        light.Mitte_Rechts:
+            state: on
+            transition: 2
+            brightness: 255
+            rgb_color: [255, 255, 255]
+        light.Links:
+            state: on
+            transition: 2
+            brightness: 255
+            rgb_color: [255, 255, 255]
+        light.Mitte_Links:
+            state: on
+            transition: 2
+            brightness: 255
+            rgb_color: [255, 255, 255]
+  - name: Stube Dunkel
+    entities:
+        light.Rechts:
+            state: on
+            transition: 2
+            brightness: 20
+            rgb_color: [255, 255, 255]
+        light.Mitte_Rechts:
+            state: on
+            transition: 2
+            brightness: 20
+            rgb_color: [255, 255, 255]
+        light.Links:
+            state: on
+            transition: 2
+            brightness: 20
+            rgb_color: [255, 255, 255]
+        light.Mitte_Links:
+            state: on
+            transition: 2
+            brightness: 20
+            rgb_color: [255, 255, 255]
+  - name: Stube TV
+    entities:
+        light.Rechts:
+            state: on
+            transition: 2
+            brightness: 20
+            rgb_color: [255, 255, 255]
+        light.Mitte_Rechts:
+            state: off
+            transition: 2
+            brightness: 20
+            rgb_color: [255, 255, 255]
+        light.Links:
+            state: off
+            transition: 2
+            brightness: 20
+            rgb_color: [255, 255, 255]
+        light.Mitte_Links:
+            state: on
+            transition: 2
+            brightness: 20
+            rgb_color: [255, 255, 255]
+  - name: Gute Nacht
+    entities:
+        light.Rechts:
+            state: off
+        light.Mitte_Rechts:
+            state: off
+        light.Links:
+            state: off
+        light.Mitte_Links:
+            state: off
+        light.Buero:
+            state: off
+        light.Schlafzimmer:
+            state: off
+        light.Kueche:
+            state: off
+        light.Bad:
+            state: off
+  - name: Guten Morgen
+    entities:
+        light.Rechts:
+            state: on
+        light.Mitte_Rechts:
+            state: on
+        light.Links:
+            state: on
+        light.Mitte_Links:
+            state: on
+        light.Buero:
+            state: on
+        light.Schlafzimmer:
+            state: on
+        light.Kueche:
+            state: on
+        light.Bad:
+            state: on
+  - name: Wecker
+    entities:
+        light.Schlafzimmer:
+            state: on
+            transition: 10 
+            brightness: 255
+            rgb_color: [255, 255, 255]
+sensor 6:
+  - platform: google_travel_time
+    name: Home to Work
+    api_key: !secret html5_api
+    origin: zone.home
+    destination: zone.work
+  
+  - platform: google_travel_time
+    name: Work To Home
+    api_key: !secret html5_api
+    origin: zone.work
+    destination: zone.home
+vacuum:
+  - platform: xiaomi_airpurifier
+    name: 'Michus Air Purifier 2'
+    host: 192.168.1.215
+    token: !secret purifier_token 
+fan:
+  - platform: xiaomi_airpurifier
+    name: 'Michus Air Purifier 2'
+    host: 192.168.1.215
+    token: !secret purifier_token
+switch:
+  - platform: flux_led
+    lights:
+      - light.schlafzimmer
+  - platform: command_line
+    switches:
+      air_purifier:
+        command_on: sudo miio --control 192.168.1.215 --method set_power --params '["on"]'
+        command_off: sudo miio --control 192.168.1.215 --method set_power --params '["off"]'
+        friendly_name: 'Air Purifier'
+  - platform: mqtt
+    name: "Monitore Michu"
+    command_topic: "pc/monitor/monitor/all/power/command"
+    state_topic: "pc/monitor/monitor/all/power/state"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    retain: true
+    optimistic: false
+  - platform: mqtt
+    name: "Brightness"
+    command_topic: "pc/monitor/LCD/brightness/state"
+    value_template: '{{ value_json.state }}'
+  - platform: mqtt
+    name: "Fernbedienung"
+    command_topic: "milight/0x38B3/cct/0"
+    value_template: '{{ value_json.state }}'
+  - platform: mqtt
+    name: "sonoff"
+    command_topic: "cmnd/sonoff/power"
+    state_topic: "stat/sonoff/POWER"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    retain: true
+    optimistic: false
+  - platform: mqtt
+    name: "sonoff_buero"
+    command_topic: "cmnd/sonoff_buero/power"
+    state_topic: "stat/sonoff_buero/POWER"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    retain: true
+    optimistic: false
+  - platform: mqtt
+    name: "sonoffbasic"
+    command_topic: "cmnd/sonoffbasic1/power"
+    state_topic: "stat/sonoffbasic1/POWER"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    retain: true
+    optimistic: false
+  - platform: template
+    switches:
+      buero:
+        value_template: "{{ is_state('light.buero', 'on') }}"
+        turn_on:
+          service: light.turn_on
+          entity_id: light.buero
+        turn_off:
+          service: light.turn_off
+          entity_id: light.buero
+  - platform: template
+    switches:
+      schlafzimmer:
+        value_template: "{{ is_state('light.schlafzimmer', 'on') }}"
+        turn_on:
+          service: light.turn_on
+          entity_id: light.schlafzimmer
+        turn_off:
+          service: light.turn_off
+          entity_id: light.schlafzimmer
+  - platform: template
+    switches:
+      bad:
+        value_template: "{{ is_state('light.bad', 'on') }}"
+        turn_on:
+          service: light.turn_on
+          entity_id: light.bad
+        turn_off:
+          service: light.turn_off
+          entity_id: light.bad
+  - platform: template
+    switches:
+      stube:
+        value_template: "{{ is_state('group.kitchen', 'on') }}"
+        turn_on:
+          service: light.turn_on
+          entity_id: group.kitchen
+        turn_off:
+          service: light.turn_off
+          entity_id: group.kitchen
+  - platform: template
+    switches:
+      alle:
+        value_template: "{{ is_state('light.all_devices', 'on') }}"
+        turn_on:
+          service: light.turn_on
+          entity_id: light.all_devices
+        turn_off:
+          service: light.turn_off
+          entity_id: light.all_devices
+  - platform: edimax
+    host: 192.168.1.94
+    name: Edimax1
+input_number:
+  strip_animation_speed:
+    name: Strip Animation Speed
+    initial: 150
+    min: 1
+    max: 150
+    step: 10
+  alarmhour:
+    name: Alarm Hour
+    icon: mdi:timer
+    initial: 06
+    min: 0
+    max: 23
+    step: 1
+  alarmmins:
+    name: Alarm Minutes
+    icon: mdi:timer
+    initial: 40
+    min: 0
+    max: 59
+    step: 1
+  alarmfinishhr:
+    name: Finish Hour
+    icon: mdi:watch-export
+    initial: 06
+    min: 0
+    max: 23
+    step: 1
+  alarmfinishmins:
+    name: Finish Minutes
+    icon: mdi:watch-export
+    initial: 50
+    min: 0
+    max: 55
+    step: 5
+  volume_radio:
+    name: Volume
+    icon: mdi:volume-high
+    min: 0
+    max: 1
+    step: 0.05
+input_boolean: !include input_boolean.yaml
+
+script: !include scripts.yaml
+input_select: !include input_select.yaml
+
+google_assistant:
+  project_id: hass-55f48
+  client_id: !secret assistant_id 
+  access_token: !secret assistant_token 
+  exposed_domains:
+    - switch
+    - light
+    - group

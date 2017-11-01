@@ -1,0 +1,159 @@
+- platform: limitlessled
+  bridges:
+    - host: 192.168.1.64
+      version: 5
+      port: 8899
+      groups:
+      - number: 2
+        type: rgbw
+        name: Stube Alles
+    - host: 192.168.1.71
+      version: 5
+      port: 8899
+      groups:
+      - number: 1
+        type: rgbw
+        name: Schlafzimmer
+      - number: 2
+        type: rgbw
+        name: Buero
+      - number: 3
+        type: rgbw
+        name: Kueche
+      - number: 4
+        type: rgbw
+        name: Bad
+    - host: 192.168.1.228
+      version: 5
+      port: 8899
+      groups:
+      - number: 1
+        type: rgbw
+        name: badvorne1
+
+
+- platform: flux_led
+  automatic_add: True
+  devices:
+    192.168.1.71:
+      name: flux_alles
+
+
+
+- platform: mqtt_template
+  name: "Main Gateway"
+  state_topic: "home/gateway/main/rgb"
+  command_topic: "home/gateway/main/rgb/set"
+  command_on_template: "{%- if red is defined and green is defined and blue is defined -%}{{ red }},{{ green }},{{ blue }}{%- else -%}255,179,0{%- endif -%},{%- if brightness is defined -%}{{ (float(brightness) / 255 * 100) | round(0) }}{%- else -%}100{%- endif -%}"
+  command_off_template: "0,0,0,0"
+  state_template: "{%- if value.split(',')[3]| float > 0 -%}on{%- else -%}off{%- endif -%}"  # must return `on` or `off`
+  brightness_template: "{{ (float(value.split(',')[3])/100*255) | round(0) }}"
+  red_template: "{{ value.split(',')[0] | int }}"
+  green_template: "{{ value.split(',')[1] | int }}"
+  blue_template: "{{ value.split(',')[2] | int }}"
+
+
+
+
+- platform: mqtt_json  
+  name: "SN1 LED"  
+  state_topic: "bruh/sensornode1"  
+  command_topic: "bruh/sensornode1/set"  
+  brightness: true  
+  flash: true  
+  rgb: true  
+  optimistic: false  
+  qos: 0
+
+
+
+- platform: mqtt_json
+  name: "Bild Licht"
+  state_topic: "bild/bild"
+  command_topic: "bild/bild/set"
+  brightness: true
+  flash: true
+  rgb: true
+  optimistic: false
+  qos: 0
+
+
+- platform: mqtt_json
+  name: "Bad Vorne_json"
+  state_topic: "update_milight/0x666/rgbw/4"
+  command_topic: "milight/0x666/rgbw/4"
+  brightness: true
+  flash: true
+  rgb: true
+  optimistic: false
+  qos: 0
+
+
+- platform: mqtt_json
+  name: "LED_Strip"
+  state_topic: "michu/ledstrip"
+  command_topic: "michu/ledstrip/set"
+  effect: true
+  effect_list:
+    - bpm  
+    - italia
+    - candy cane  
+    - candy cane blue
+    - animations  
+    - template  
+    - blendwave  
+    - beatwave  
+    - blur  
+    - confetti  
+    - confetti 2  
+    - confetti pal  
+    - dotbeat  
+    - easing  
+    - every n example  
+    - fill grad  
+    - inoise8 mover  
+    - inoise8 pal  
+    - noise 16 1  
+    - noise 16 2  
+    - noise 16 3  
+    - one sine pal  
+    - palette cross fade  
+    - rainbow march  
+    - rainbow beat  
+    - ripple pal  
+    - sinelon  
+    - cyclon rainbow  
+    - dots  
+    - fire  
+    - glitter  
+    - juggle  
+    - lightning  
+    - noise  
+    - police all  
+    - police one  
+    - rainbow  
+    - rainbow with glitter  
+    - ripple  
+    - sinelon  
+    - usa
+    - yolo
+    - yolo1
+    - solid  
+    - twinkle
+  brightness: true
+  flash: true
+  rgb: true
+  optimistic: false
+  qos: 0
+
+
+- platform: mqtt
+  name: 'BETT LED'
+  state_topic: 'bett/out/state/state'
+  command_topic: 'bett/out/state/set'
+  brightness_state_topic: 'bett/out/brightness/state'
+  brightness_command_topic: 'bett/out/brightness/set'
+  rgb_state_topic: 'bett/out/color/state'
+  rgb_command_topic: 'bett/out/color/set'
+  white_value_state_topic: 'bett/out/white/state'
+  white_value_command_topic: 'bett/out/white/set'

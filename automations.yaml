@@ -1,0 +1,875 @@
+################################################################
+#     LIGHTS                                                   #
+################################################################
+
+- id: licht
+  alias: Licht
+  trigger:
+  - platform: state
+    entity_id: switch.buero
+  action:
+    service: switch.toggle
+    entity_id: light.buero
+
+- id: licht_gehen
+  alias: Licht aus wenn niemand zuhause
+  trigger:
+  - platform: state
+    entity_id: group.family
+    to: not_home
+  action:
+    service: light.turn_off
+
+- id: bewegung_bad
+  alias: Bewegung Bad
+  trigger:
+    platform: state
+    entity_id: binary_sensor.motion_sensor_158d000155e030
+    from: 'off'
+    to: 'on'
+  action:
+    service: light.turn_on
+    entity_id: light.bad_vorne_json
+
+
+- id: bewegung_gang_off
+  alias: Bewegung Gang
+  trigger:
+    platform: state
+    entity_id: binary_sensor.motion_sensor_158d000155e030
+    from: 'on'
+    to: 'off'
+    for:
+      minutes: '5'
+  action:
+    service: light.turn_off
+    entity_id: light.bad_vorne_json
+
+- id: licht_basteln
+  alias: Licht basteln
+  trigger:
+  - entity_id: switch.wall_switch_158d00014ca4c4
+    platform: state
+    to: 'on'
+  action:
+  - alias: basteln
+    data:
+      entity_id: switch.sonoff_buero
+    service: switch.turn_on
+- id: licht_basteln_off
+  alias: Licht basteln off
+  trigger:
+    platform: state
+    entity_id: switch.wall_switch_158d00014ca4c4
+    to: 'off'
+  action:
+    service: switch.turn_off
+    data:
+      entity_id: switch.sonoff_buero
+
+
+- id: 1bewegung_buero
+  alias: Bewegung Buero
+  trigger:
+  - platform: state
+    entity_id: sensor.sn1_pir
+    to: motion
+  - platform: state
+    entity_id: sensor.sn2_pir
+    to: motion
+  - platform: mqtt
+    topic: 1home/433toMQTT
+    payload: '6003929'
+  condition:
+    condition: time
+    after: '06:40:00'
+    before: '22:30:00'
+  action:
+    service: script.turn_on
+    entity_id: script.buero
+
+- id: 1bewegung_kueche
+  alias: Bewegung Kueche
+  trigger:
+    platform: state
+    entity_id: binary_sensor.motion_sensor_158d000113d0ff
+    to: 'on'
+  condition:
+    condition: time
+    after: '06:30:00'
+    before: '22:30:00'
+  action:
+    service: light.turn_on
+    entity_id: light.kueche
+
+- id: 1bewegung_Kueche_off
+  alias: Bewegung Kueche
+  trigger:
+    platform: state
+    entity_id: binary_sensor.motion_sensor_158d000113d0ff
+    to: 'off'
+    for:
+      minutes: 5
+  action:
+    service: light.turn_off
+    entity_id: light.kueche
+
+- id: 1bewegung_stube
+  alias: Bewegung Stube
+  trigger:
+    platform: state
+    entity_id: binary_sensor.motion_sensor_158d00014ce6c4
+    to: 'on'
+  condition:
+    condition: time
+    after: '06:30:00'
+    before: '22:30:00'
+  action:
+    service: light.turn_on
+    entity_id: light.stube_alles
+
+- id: 1bewegung_stube_off
+  alias: Bewegung Stube
+  trigger:
+    platform: state
+    entity_id: binary_sensor.motion_sensor_158d00014ce6c4
+    to: 'off'
+    for:
+      minutes: 3
+  action:
+    service: light.turn_off
+    entity_id: light.stube_alles
+
+- id: Badvorne
+  alias: Bad Vorne
+  trigger:
+    platform: mqtt
+    topic: update_milight/0x666/rgbw/1
+    payload: '{"device_id":1638,"device_type":"rgbw","group_id":1,"state":"ON"}'
+  action:
+    service: light.turn_off
+    entity_id: light.badvorne
+
+- id: licht_aussen
+  alias: Licht aussen
+  trigger:
+    platform: state
+    entity_id: binary_sensor.motion_sensor_158d000112de28
+    to: 'on'
+  condition:
+  - condition: time
+    after: '17:30:00'
+    before: '08:00:00'
+  action:
+    service: switch.turn_on
+    data:
+      entity_id: switch.sonoffbasic
+
+- id: licht_aussen_off
+  alias: Licht aussen off
+  trigger:
+    platform: state
+    entity_id: binary_sensor.motion_sensor_158d000112de28
+    to: 'off'
+    for:
+      minutes: '2'
+  condition:
+  - condition: time
+    after: '17:30:00'
+    before: '08:00:00'
+  action:
+    service: switch.turn_off
+    data:
+      entity_id: switch.sonoffbasic
+
+- alias: "Porch Animation Speed"
+  initial_state: True
+  hide_entity: False
+  trigger:
+    - platform: state
+      entity_id: input_number.strip_animation_speed
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: "michu/ledstrip/set"
+        payload: '{"transition":{{ trigger.to_state.state | int }}}'
+
+
+
+################################################################
+#     GEO STUFF                                                #
+################################################################
+
+
+- id: Michu_kommt11
+  alias: Michu kommt1
+  trigger:
+    platform: zone
+    entity_id: device_tracker.michu_u
+    zone: zone.work
+    event: enter
+  action:
+    service: notify.michu
+    data:
+      title: Testtitel
+      message: "bin  {%- if is_state('device_tracker.michu_u', 'Work') -%}\n    Work\n\
+        {%- elif  is_state('device_tracker.michu_u', 'Kaech')-%}\n    Kaech\n{%- else\
+        \ -%}\n    Home\n{% endif %}       \n"
+
+
+
+- id: Michu_geht
+  alias: Michu geht
+  trigger:
+    platform: zone
+    entity_id: device_tracker.michu_u
+    zone: zone.work
+    event: leave
+  action:
+    service: notify.michu
+    data:
+      message: Chume
+
+- id: Michu_kommt
+  alias: Michu kommt
+  trigger:
+    platform: zone
+    entity_id: device_tracker.michu_u
+    zone: zone.work
+    event: enter
+  action:
+    service: notify.michu
+    data:
+      title: Testtitel
+      message: Bin am arbeiten
+
+
+- id: michu_kaech
+  alias: Michu kaech
+  trigger:
+    platform: zone
+    entity_id: device_tracker.michu_u
+    zone: zone.kaech
+    event: enter
+  action:
+    service: notify.michu
+    data:
+      title: testtitel Kaech
+      message: "Bi no bim K\xE4ch ;)"
+
+- id: michu_wuerklech
+  alias: Michu kommt
+  trigger:
+    platform: zone
+    entity_id: device_tracker.michu_u
+    zone: zone.kaech
+    event: leave
+  action:
+    service: notify.michu
+    data:
+      message: "Chume jetzt w\xFCrklech :)"
+
+
+
+
+
+
+
+
+
+################################################################
+#     XIAOMI SWITCH                                            #
+################################################################
+
+
+
+- id: prisca_schlafzimmer
+  alias: Prisca Schlafzimmer
+  trigger:
+    platform: event
+    event_type: click
+    event_data:
+      entity_id: binary_sensor.switch_158d000125652d
+      click_type: single
+  action:
+    service: light.toggle
+    entity_id: light.Schlafzimmer
+
+- id: prisca_bad
+  alias: Prisca Bad
+  trigger:
+    platform: event
+    event_type: click
+    event_data:
+      entity_id: binary_sensor.switch_158d000125652d
+      click_type: double
+  action:
+    service: light.toggle
+    entity_id: light.bad
+
+- id: prisca_bett
+  alias: Prisca alles
+  trigger:
+    platform: event
+    event_type: click
+    event_data:
+      entity_id: binary_sensor.switch_158d000125652d
+      click_type: long_click_press
+  action:
+    service: light.toggle
+    entity_id: light.bett_led
+
+
+- id: michu_schlafzimmer
+  alias: Michu Schlafzimmer
+  trigger:
+    platform: event
+    event_type: click
+    event_data:
+      entity_id: binary_sensor.switch_158d0001105ab6
+      click_type: single
+  action:
+    service: switch.toggle
+    entity_id: switch.Schlafzimmer
+
+- id: michu_bad
+  alias: Michu Bad
+  trigger:
+    platform: event
+    event_type: click
+    event_data:
+      entity_id: binary_sensor.switch_158d0001105ab6
+      click_type: double
+  action:
+    service: light.toggle
+    entity_id: light.bad
+
+- id: michu_bett
+  alias: Michu Bett
+  trigger:
+  - event_data:
+      click_type: long_click_press
+      entity_id: binary_sensor.switch_158d0001105ab6
+    event_type: click
+    platform: event
+  action:
+    service: light.toggle
+    entity_id: light.bett_led
+
+- id: kueche
+  alias: "K\xFCche"
+  trigger:
+    platform: event
+    event_type: click
+    event_data:
+      entity_id: binary_sensor.switch_158d00013f7fda
+      click_type: single
+  action:
+    service: light.toggle
+    entity_id: light.kueche
+
+- id: licht_kueche
+  alias: Kueche Stube
+  trigger:
+    platform: event
+    event_type: click
+    event_data:
+      entity_id: binary_sensor.switch_158d00013f7fda
+      click_type: long_click_press
+  action:
+    service: light.toggle
+    entity_id: light.stube_alles
+
+- id: licht_buero
+  alias: Michu alles
+  trigger:
+    platform: event
+    event_type: click
+    event_data:
+      entity_id: binary_sensor.switch_158d00013f7fda
+      click_type: double
+  action:
+    service: light.toggle
+    entity_id: light.buero
+
+- id: lichtschalter_schlafzimmer_on
+  alias: Lichtschalter Schlafzimmer
+  trigger:
+    platform: state
+    entity_id: binary_sensor.door_window_sensor_158d0001a5f2c5
+    from: 'off'
+    to: 'on'
+  action:
+    service: light.turn_on
+    entity_id: light.schlafzimmer
+
+- id: lichtschalter_schlafzimmer_off
+  alias: Lichtschalter Schlafzimmer off
+  trigger:
+    platform: state
+    entity_id: binary_sensor.door_window_sensor_158d0001a5f2c5
+    from: 'on'
+    to: 'off'
+  action:
+    service: light.turn_off
+    entity_id: light.schlafzimmer
+
+
+
+################################################################
+#     RF REMOTE                                                #
+################################################################
+
+- id: remote
+  alias: RF Remote
+  trigger:
+    platform: mqtt
+    topic: update_milight/0x38B3/cct/0
+    payload: '{"device_id":14515,"device_type":"cct","group_id":0,"state":"ON"}'
+  action:
+    service: light.turn_on
+    entity_id: light.buero
+
+- id: remote1
+  alias: RF Remote1
+  trigger:
+    platform: mqtt
+    topic: update_milight/0x38B3/cct/0
+    payload: '{"device_id":14515,"device_type":"cct","group_id":0,"state":"OFF"}'
+  action:
+    service: light.turn_off
+    entity_id: light.buero
+
+- id: remote2
+  alias: RF Remote2
+  trigger:
+    platform: mqtt
+    topic: update_milight/0x38B3/cct/0
+    payload: '{"device_id":14515,"device_type":"cct","group_id":1,"state":"ON"}'
+  action:
+    service: light.turn_on
+    entity_id: light.buero
+
+- id: remote3
+  alias: RF Remote3
+  trigger:
+    platform: mqtt
+    topic: update_milight/0x38B3/cct/0
+    payload: '{"device_id":14515,"device_type":"cct","group_id":1,"state":"OFF"}'
+  action:
+    service: light.turn_off
+    entity_id: light.buero
+
+- id: remote4
+  alias: RF Remote4
+  trigger:
+    platform: mqtt
+    topic: update_milight/0x38B3/cct/0
+    payload: '{"device_id":14515,"device_type":"cct","group_id":0,"command":"brightness_up","state":"ON"}'
+  action:
+    service: light.turn_on
+    entity_id: light.buero
+    data_template:
+      brightness: '{{states.light.buero.attributes.brightness + 10}}'
+
+- id: remote5
+  alias: RF Remote5
+  trigger:
+    platform: mqtt
+    topic: update_milight/0x38B3/cct/0
+    payload: '{"device_id":14515,"device_type":"cct","group_id":0,"command":"brightness_down","state":"ON"}'
+  action:
+    service: light.turn_on
+    entity_id: light.buero
+    data_template:
+      brightness: '{{states.light.buero.attributes.brightness - 10}}'
+
+- id: remotekueche
+  alias: "RF Remote K\xFCche"
+  trigger:
+    platform: mqtt
+    topic: update_milight/0x38B3/cct/1
+    payload: '{"device_id":14515,"device_type":"cct","group_id":1,"state":"ON"}'
+  action:
+    service: light.turn_on
+    entity_id: light.kueche
+
+- id: remotekuecheoff
+  alias: RF Remote kuecheoff
+  trigger:
+    platform: mqtt
+    topic: update_milight/0x38B3/cct/1
+    payload: '{"device_id":14515,"device_type":"cct","group_id":1,"state":"OFF"}'
+  action:
+    service: light.turn_off
+    entity_id: light.kueche
+
+- id: remotestube
+  alias: RF Remote Stube
+  trigger:
+    platform: mqtt
+    topic: update_milight/0x38B3/cct/2
+    payload: '{"device_id":14515,"device_type":"cct","group_id":2,"state":"ON"}'
+  action:
+    service: light.turn_on
+    entity_id: light.stube_alles
+
+- id: remotestubeoff
+  alias: RF Remote stubeoff
+  trigger:
+    platform: mqtt
+    topic: update_milight/0x38B3/cct/2
+    payload: '{"device_id":14515,"device_type":"cct","group_id":2,"state":"OFF"}'
+  action:
+    service: light.turn_off
+    entity_id: light.stube_alles
+
+- id: remotebad
+  alias: RF Remote bad
+  trigger:
+    platform: mqtt
+    topic: update_milight/0x38B3/cct/3
+    payload: '{"device_id":14515,"device_type":"cct","group_id":3,"state":"ON"}'
+  action:
+    service: light.turn_on
+    entity_id: light.bad
+
+- id: remotebadoff
+  alias: RF Remote badoff
+  trigger:
+    platform: mqtt
+    topic: update_milight/0x38B3/cct/3
+    payload: '{"device_id":14515,"device_type":"cct","group_id":3,"state":"OFF"}'
+  action:
+    service: light.turn_off
+    entity_id: light.bad
+
+- id: remoteschlaf
+  alias: RF Remote Schlafzimmer
+  trigger:
+    platform: mqtt
+    topic: update_milight/0x38B3/cct/4
+    payload: '{"device_id":14515,"device_type":"cct","group_id":4,"state":"ON"}'
+  action:
+    service: light.turn_on
+    entity_id: light.schlafzimmer
+
+- id: remoteschlafzimmeroff
+  alias: RF Remote schlafzimmeroff
+  trigger:
+    platform: mqtt
+    topic: update_milight/0x38B3/cct/4
+    payload: '{"device_id":14515,"device_type":"cct","group_id":4,"state":"OFF"}'
+  action:
+    service: light.turn_off
+    entity_id: light.schlafzimmer
+
+################################################################
+#     XIAOMI                                                   #
+################################################################
+
+- id: xiaomiair
+  alias: Mi Air Mode
+  trigger:
+    platform: state
+    entity_id: input_select.air_purifier_mode
+  action:
+    service_template: shell_command.miair_{{ states.input_select.air_purifier_mode.state.lower()
+      }}
+
+- id: airsleep
+  alias: Air Purifier auf Sleep
+  trigger:
+    platform: time
+    at: '22:00:00'
+  action:
+    service_template: shell_command.miair_sleep
+
+- id: airauto
+  alias: Air Purifier auf Auto
+  trigger:
+    platform: time
+    at: '06:40:00'
+  condition:
+  - condition: time
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  action:
+    service_template: shell_command.miair_auto
+
+
+
+################################################################
+#     STUFF                                                    #
+################################################################
+
+- alias: Log Level
+  trigger:
+    platform: state
+    entity_id: input_select.log_level
+  action:
+    service: logger.set_level
+    data_template:
+      homeassistant.components: "{{ trigger.to_state.state }}"
+
+- id: RAUCH
+  alias: RAUCH
+  trigger:
+    platform: state
+    entity_id: binary_sensor.smoke_sensor_158d000130e9df
+    to: 'on'
+  action:
+    service: notify.michu
+    data:
+      title: ALARM
+      message: ALARM Büro!!
+
+
+- alias: Battery Status Update
+  trigger:
+  - platform: time
+    minutes: '/5'
+    seconds: 00
+  action:
+  - alias: Battery Status Update
+    service: input_boolean.toggle
+    data:
+      entity_id: input_boolean.battery_status_update
+
+- alias: 'Battery Alert'
+  trigger:
+    - platform: time
+      at: '10:00:00'
+    - platform: time
+      at: '18:00:00'
+  condition:
+    condition: template
+    value_template: "{% if states('sensor.battery_status') %}{{ true }}{% else %}{{ false }}{% endif %}"
+  action:
+    - service: persistent_notification.create
+      data_template:
+        title: Low Battery levels
+        message: "{{ states('sensor.battery_status') }}"
+        notification_id: low-battery-alert
+    - service: notify.michu
+      data:
+        title: Low Battery
+        message: >-
+          These devices have low battery levels: {{ states('sensor.battery_status') }}
+
+
+
+- id: tuerklingel1
+  alias: Doorbell ringing
+  trigger:
+    platform: mqtt
+    topic: home/outdoors/doorbell
+    payload: 'on'
+  action:
+    service: notify.michu
+    data:
+      message: "Knopf wurde gedr\xFCckt :)"
+
+
+- id: radio_volume
+  alias: Set Radio Volume
+  trigger:
+    platform: state
+    entity_id: input_number.volume_radio
+  action:
+    service: media_player.volume_set
+    data_template:
+      entity_id: '{% if is_state("input_select.chromecast_radio", "Livingroom") %}
+        media_player.chromecastaudio8898 {% elif is_state("input_select.chromecast_radio",
+        "Hall") %} media_player.ca_hall {% elif is_state("input_select.chromecast_radio",
+        "Bedroom") %} media_player.bed_room {% elif is_state("input_select.chromecast_radio",
+        "Bathroom") %} media_player.ca_bathroom {% elif is_state("input_select.chromecast_radio",
+        "Everywhere") %} media_player.home_group {% endif %}'
+      volume_level: '{{  states.input_number.volume_radio.state  }}'
+
+
+- id: Foto_tuere
+  alias: Bewegung Tuere Foto
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.motion_sensor_158d000112de28
+    to: 'on'
+  condition:
+    condition: and
+    conditions:
+    - condition: time
+      after: '07:45:00'
+      before: '17:15:00'
+      weekday:
+      - mon
+      - tue
+      - wed
+      - thu
+      - fri
+    - condition: template
+      value_template: '{{ states.device_tracker.michu_u != home }}'
+  action:
+    service: shell_command.foto
+
+
+################################################################
+#     ALARM                                                    #
+################################################################
+
+
+
+- alias: 'Wake Me Up'
+  trigger:
+     - platform: time
+       minutes: '/1'
+       seconds: 0      
+  condition:
+     condition: or
+     conditions:
+       - condition: and
+         conditions:
+           - condition: state
+             entity_id: input_boolean.alarmstatus
+             state: 'on'
+           - condition: state
+             entity_id: input_boolean.alarmweekday
+             state: 'on'
+           - condition: time
+             weekday:
+               - mon
+               - tue
+               - wed
+               - thu
+               - fri
+           - condition: template
+             value_template: '{{ now().time().strftime("%R") == states.sensor.alarm_time.state }}'
+       - condition: and
+         conditions:
+           - condition: state
+             entity_id: input_boolean.alarmstatus
+             state: 'on'
+           - condition: state
+             entity_id: input_boolean.alarmweekday
+             state: 'off'
+           - condition: template
+             value_template: '{{ now().time().strftime("%R") == states.sensor.alarm_time.state }}'
+  action:
+     - service: notify.michu
+       data:
+         title: "Alarm"
+         message: "Good morning Sir. Time to Wake Up!"
+     - service: switch.turn_on
+       data:
+         entity_id:
+           - switch.bedroom_pc_lamp
+           - switch.bedroom_red_bottom_lamp
+           - switch.bedroom_uplight_bluebottom
+           - light.bedroom_ceiling_light
+           - switch.bedroom_pc__sound
+     - service: scene.turn_on
+       data:
+         entity_id:
+           - scene.wecker
+         
+         
+- alias: Turn off Alarm
+  trigger:
+       - platform: time
+         minutes: '/1'
+         seconds: 0   
+  condition:
+    - condition: template
+      value_template: '{{ now().time().strftime("%R") == states.sensor.alarm_time_fin.state }}'     
+  action:
+     - service: switch.turn_off
+       data:
+         entity_id:
+           - switch.bedroom_pc_lamp
+           - switch.bedroom_uplight_bluebottom
+           - switch.bedroom_red_bottom_lamp
+           - light.bedroom_ceiling_light
+           - switch.bedroom_pc__sound
+     - service: notify.michu
+       data:
+         title: "Alarm Finished"
+         message: "You should be Up by Now!"
+     - service: scene.turn_off
+       data:
+         entity_id:
+           - scene.wecker
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+################################################################
+#    Automatisierung 1. Stock                                  #
+################################################################
+
+- id: RAUCH_kueche_o
+  alias: RAUCH_kueche_o
+  trigger:
+    platform: state
+    entity_id: binary_sensor.smoke_sensor_158d0001307ec8
+    to: 'on'
+  action:
+    - service: notify.daniel
+      data:
+        title: ALARM
+        message: Rauchmelder Küche!!
+    - service: notify.michu
+      data:
+        title: ALARM
+        message: Rauchmelder Küche oben!!
+
+
+- id: RAUCH_server
+  alias: RAUCH_server
+  trigger:
+    platform: state
+    entity_id: binary_sensor.smoke_sensor_158d000153668c
+    to: 'on'
+  action:
+    - service: notify.daniel
+      data:
+        title: ALARM
+        message: Rauchmelder Server!!
+    - service: notify.michu
+      data:
+        title: ALARM
+        message: Rauchmelder Server!!
+
+
+
+- id: RAUCH_werkstatt_oben
+  alias: RAUCH_werkstatt_oben
+  trigger:
+    platform: state
+    entity_id: binary_sensor.smoke_sensor_158d000157588e
+    to: 'on'
+  action:
+    - service: notify.daniel
+      data:
+        title: ALARM
+        message: Rauchmelder Werkstatt!!
+    - service: notify.michu
+      data:
+        title: ALARM
+        message: Rauchmelder Werkstatt!!

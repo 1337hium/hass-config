@@ -1,0 +1,10 @@
+alarmstatus:
+  name: Wake Me Up
+  initial: on
+  icon: mdi:alarm-check
+alarmweekday:
+  name: Weekdays Only
+  initial: on
+  icon: mdi:calendar
+battery_status_update:
+  name: Battery Status Update

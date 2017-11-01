@@ -1,0 +1,98 @@
+device_tracker.michu_u:
+  friendly_name: Michu
+  entity_picture: https://pbs.twimg.com/profile_images/378800000384596760/b23487e9c7687886bb57f2faaf977642_400x400.jpeg
+sensor.unnamed_device_1:
+  friendly_name: Estrich
+sensor.unnamed_device:
+  friendly_name: Serverschrank
+device_tracker.prisca:
+  entity_picture: https://scontent-vie1-1.xx.fbcdn.net/v/t1.0-9/12189840_10205409203055075_5158824281882407286_n.jpg?oh=d034b2857917471253bf3536f67709eb&oe=58E6BA4A
+homeassistant.known_devices: !include known_devices.yaml
+sensor.speedtest_download:
+  friendly_name: Download Speed
+  icon: mdi:download
+  
+sensor.speedtest_ping:
+  friendly_name: Ping
+  icon: mdi:pin
+  
+sensor.speedtest_upload:
+  friendly_name: Upload Speed
+  icon: mdi:upload   
+  
+sensor.work_to_home:
+  icon: mdi:car
+
+sensor.home_to_work:
+  icon: mdi:car
+sensor.pws_alerts:
+  friendly_name: Warnungen
+  icon: mdi:alert-outline
+sensor.pws_location:
+  friendly_name: Ort
+  icon: mdi:map-marker
+sensor.pws_feelslike_c:
+  friendly_name: gefühlt
+sensor.dark_sky_daily_summary:
+  friendly_name: Zusammenfassung
+  icon: mdi:calendar-clock
+sensor.pws_weather:
+  friendly_name: Aktuell
+sensor.temperature_158d000156e658:
+  friendly_name: Temp Filament
+sensor.temperature_158d000159ee45:
+  friendly_name: Temp Schlafzimmer
+sensor.temperature_158d0001217329:
+  friendly_name: Temp Sitzplatz
+sensor.humidity_158d0001217329:
+  friendly_name: Luftfeuchtigkeit Sitzplatz
+sensor.humidity_158d000156e658:
+  friendly_name: Luftfeuchtigkeit Filament
+sensor.humidity_158d000159ee45:
+  friendly_name: Luftfeuchtigkeit Schlafzimmer
+light.gateway_light_f0b429cfae54:
+  friendly_name: Gateway
+binary_sensor.switch_158d000125652d:
+  friendly_name: SchPrisca
+binary_sensor.switch_158d00013f7fda:
+  friendly_name: SchKüche
+binary_sensor.switch_158d0001105ab6:
+  friendly_name: SchMichu
+binary_sensor.motion_sensor_158d000155e030:
+  friendly_name: Gang
+binary_sensor.motion_sensor_158d000112de28:
+  friendly_name: Türe
+light.5ccf7fab6164_192168181:
+  friendly_name: Bett
+binary_sensor.smoke_sensor_158d000130e9df:
+  friendly_name: Rauchmelder Büro
+binary_sensor.door_window_sensor_158d0001a4a3dc:
+  friendly_name: Lichtschalter Büro
+binary_sensor.door_window_sensor_158d0001a5f2c5:
+  friendly_name: Lichtschalter Schlafzimmer
+binary_sensor.floorplan:
+  custom_ui_state_card: floorplan
+  config: !include floorplan.yaml
+light.buero:
+  google_assistant: true
+  google_assistant_name: office light
+binary_sensor.smoke_sensor_158d000153668c:
+  friendly_name: server_oben
+binary_sensor.smoke_sensor_158d000157588e:
+  friendly_name: werkstatt_oben
+binary_sensor.smoke_sensor_158d0001307ec8:
+  friendly_name: kueche_oben
+light.kueche:
+  google_assistant: true
+  google_assistant_name: kichen light
+light.bad:
+  google_assistant: true
+  google_assistant_name: bath back light
+light.bad_vorne_json:
+  google_assistant: true
+  google_assistant_name: bath front light
+switch.wall_switch_158d00014ca4c4:
+  google_assistant: true
+  google_assistant_name: hobby light
+
+
