@@ -123,11 +123,13 @@ octoprint:
 ###########################################
 ##Groups                                  #
 ###########################################
+
 group: !include groups.yaml
 
 ###########################################
 ##Light                                   #
 ###########################################
+
 light: !include light.yaml
 
 device_tracker:
@@ -143,9 +145,12 @@ device_tracker:
   - platform: mqtt_json
     devices:
       michu_u: zanzito/htcu/location
+
+      
 ###########################################
 ##Zones                                   #
 ###########################################
+
 mqtt:
   broker: mqtt.1337hium.ch
   port: 1883
