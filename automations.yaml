@@ -158,7 +158,7 @@
     to: 'on'
   condition:
   - condition: time
-    after: '17:30:00'
+    after: '16:45:00'
     before: '08:00:00'
   action:
     service: switch.turn_on
@@ -175,7 +175,7 @@
       minutes: '2'
   condition:
   - condition: time
-    after: '17:30:00'
+    after: '16:45:00'
     before: '08:00:00'
   action:
     service: switch.turn_off
@@ -711,7 +711,7 @@
       - thu
       - fri
     - condition: template
-      value_template: '{{ states.device_tracker.michu_u != home }}'
+      value_template: '{{ not is_state('device_tracker.michu_u', 'home') }}'
   action:
     service: shell_command.foto
 
@@ -873,3 +873,20 @@
       data:
         title: ALARM
         message: Rauchmelder Werkstatt!!
+
+#############################################
+#   TEST                                    #
+#############################################
+
+
+- alias: Announce the garage opening on Google Home
+  trigger:
+    platform: state
+    entity_id: sensor.pushbullet_body
+  action:
+#  - alias: blubbedi
+    service: tts.google_say
+    entity_id: media_player.chromecastaudio8898
+    data_template:
+      message: >
+          "{{ states('sensor.pushbullet_body') }}"

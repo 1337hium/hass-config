@@ -2,6 +2,7 @@ default_view:
   view: true
   icon: mdi:home
   entities:
+  - sensor.jahreszeit
   - switch.sonoffbasic
   - media_player.plex_web_chrome
   - binary_sensor.xiaomi

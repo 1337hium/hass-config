@@ -95,4 +95,6 @@ switch.wall_switch_158d00014ca4c4:
   google_assistant: true
   google_assistant_name: hobby light
 
-
+fan.michus_air_purifier_2:
+  google_assistant: true
+  google_assistant_name: air
