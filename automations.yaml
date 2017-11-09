@@ -702,8 +702,8 @@
     condition: and
     conditions:
     - condition: time
-      after: '07:45:00'
-      before: '17:15:00'
+      after: '00:45:00'
+      before: '23:15:00'
       weekday:
       - mon
       - tue
@@ -726,7 +726,7 @@
   trigger:
      - platform: time
        minutes: '/1'
-       seconds: 0      
+       seconds: 0
   condition:
      condition: or
      conditions:
@@ -774,16 +774,16 @@
        data:
          entity_id:
            - scene.wecker
-         
-         
+
+
 - alias: Turn off Alarm
   trigger:
        - platform: time
          minutes: '/1'
-         seconds: 0   
+         seconds: 0
   condition:
     - condition: template
-      value_template: '{{ now().time().strftime("%R") == states.sensor.alarm_time_fin.state }}'     
+      value_template: '{{ now().time().strftime("%R") == states.sensor.alarm_time_fin.state }}'
   action:
      - service: switch.turn_off
        data:
