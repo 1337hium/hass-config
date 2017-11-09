@@ -150,8 +150,8 @@
     service: light.turn_off
     entity_id: light.badvorne
 
-- id: licht_aussen
-  alias: Licht aussen
+- id: licht_aussen_winter
+  alias: Licht aussen Winter
   trigger:
     platform: state
     entity_id: binary_sensor.motion_sensor_158d000112de28
@@ -160,6 +160,27 @@
   - condition: time
     after: '16:45:00'
     before: '08:00:00'
+  - condition: state
+    entity_id: sensor.jahreszeit
+    to: 'Winter'
+  action:
+    service: switch.turn_on
+    data:
+      entity_id: switch.sonoffbasic
+
+- id: licht_aussen_sommer
+  alias: Licht aussen sommer
+  trigger:
+    platform: state
+    entity_id: binary_sensor.motion_sensor_158d000112de28
+    to: 'on'
+  condition:
+  - condition: time
+    after: '18:00:00'
+    before: '07:00:00'
+  - condition: state
+    entity_id: sensor.jahreszeit
+    to: 'Sommer'
   action:
     service: switch.turn_on
     data:
