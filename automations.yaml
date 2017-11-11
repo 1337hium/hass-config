@@ -158,11 +158,11 @@
     to: 'on'
   condition:
   - condition: time
-    after: '16:45:00'
+    after: '16:00:00'
     before: '08:00:00'
   - condition: state
     entity_id: sensor.jahreszeit
-    to: 'Winter'
+    state: 'Winter'
   action:
     service: switch.turn_on
     data:
@@ -180,7 +180,7 @@
     before: '07:00:00'
   - condition: state
     entity_id: sensor.jahreszeit
-    to: 'Sommer'
+    state: 'Sommer'
   action:
     service: switch.turn_on
     data:
@@ -720,20 +720,19 @@
     entity_id: binary_sensor.motion_sensor_158d000112de28
     to: 'on'
   condition:
-     condition: and
-     conditions:
-       - condition: time
-         after: '00:45:00'
-         before: '23:15:00'
-         weekday:
-         - mon
-         - tue
-         - wed
-         - thu
-         - fri
-       - condition: template
-         value_template: >
-           '{{ not is_state('device_tracker.michu_u', 'home') }}'
+#    condition: and
+#    conditions:
+  - condition: time
+    after: '00:45:00'
+    before: '23:15:00'
+    weekday:
+      - mon
+      - tue
+      - wed
+      - thu
+      - fri
+  - condition: template
+    value_template: "{{ not is_state('device_tracker.michu_u', 'home') }}"
   action:
      service: shell_command.foto
 
