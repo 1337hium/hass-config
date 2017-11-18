@@ -24,6 +24,7 @@ licht:
   icon: mdi:lightbulb
   view: true
   entities:
+  - switch.sonoff_hüsli
   - light.uteled
   - input_number.strip_animation_speed
   - light.led_strip
@@ -243,7 +244,7 @@ multisensor1:
   name: Multisensor
   entities:
   - sensor.sn1_ldr
-  - sensor.sn1_pir 
+  - sensor.sn1_pir
   - sensor.sn1_humidity
   - sensor.sn1_temperature
   - sensor.sn1_real_feel
