@@ -24,7 +24,7 @@ licht:
   icon: mdi:lightbulb
   view: true
   entities:
-  - switch.sonoff_hüsli
+  - switch.sonoff_husli
   - light.uteled
   - input_number.strip_animation_speed
   - light.led_strip
