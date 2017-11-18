@@ -24,6 +24,7 @@ licht:
   icon: mdi:lightbulb
   view: true
   entities:
+  - light.uteled
   - input_number.strip_animation_speed
   - light.led_strip
   - fan.michus_air_purifier_2
@@ -52,6 +53,7 @@ prisca:
   name: Prisca
   view: true
   entities:
+  - scene.wecker
   - script.stop_scripts
   - script.bad_vorne_loop1
   - automation.licht_wenn_ich_komme

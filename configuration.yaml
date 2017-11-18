@@ -581,9 +581,9 @@ scene:
     entities:
         light.Schlafzimmer:
             state: on
-            transition: 10 
+            transition: 15 
             brightness: 255
-            rgb_color: [255, 255, 255]
+#            rgb_color: [255, 255, 255]
 sensor 6:
   - platform: google_travel_time
     name: Home to Work

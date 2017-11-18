@@ -147,24 +147,26 @@
   qos: 0
 
 
+#- platform: mqtt
+#  name: 'BETT LED'
+#  state_topic: 'bett/out/state/state'
+#  command_topic: 'bett/out/state/set'
+#  brightness_state_topic: 'bett/out/brightness/state'
+#  brightness_command_topic: 'bett/out/brightness/set'
+#  rgb_state_topic: 'bett/out/color/state'
+#  rgb_command_topic: 'bett/out/color/set'
+#  white_value_state_topic: 'bett/out/white/state'
+#  white_value_command_topic: 'bett/out/white/set'
 - platform: mqtt
   name: 'BETT LED'
-  state_topic: 'bett/out/state/state'
-  command_topic: 'bett/out/state/set'
-  brightness_state_topic: 'bett/out/brightness/state'
-  brightness_command_topic: 'bett/out/brightness/set'
-  rgb_state_topic: 'bett/out/color/state'
-  rgb_command_topic: 'bett/out/color/set'
-  white_value_state_topic: 'bett/out/white/state'
-  white_value_command_topic: 'bett/out/white/set'
-- platform: mqtt
-  name: "uteled"
-  command_topic: "cmnd/sonoffled/POWER"
-  state_topic: "stat/sonoffled/POWER"
-  brightness_command_topic: "cmnd/sonoffled/Dimmer"
-  brightness_state_topic: "stat/sonoffled/Dimmer"
-  color_command_topic: "cmnd/sonoffled/Color"
-  color_temp_state_topic: "stat/sonoffled/Color"
+  command_topic: 'cmnd/sonoffled/POWER'
+  state_topic: 'stat/sonoffled/POWER'
+  brightness_command_topic: 'cmnd/sonoffled/Dimmer'
+  brightness_state_topic: 'stat/sonoffled/Dimmer'
+  rgb_command_topic: 'cmnd/sonoffled/Color'
+  rgb_state_topic: 'stat/sonoffled/Color'
+  white_value_state_topic: 'stat/sonoffled/Color'
+  white_value_command_topic: 'cmnd/sonoffled/Color'
   brightness_scale: 100
   optimistic: false
   retain: true
