@@ -661,6 +661,15 @@ switch:
     retain: true
     optimistic: false
   - platform: mqtt
+    name: "Bett LED Hinten"
+#    state_topic: "home/sonoff/living_room/1/stat"
+    command_topic: "1home/commands/PLSL_435/433_1/BITS_24"
+    qos: 0
+    payload_on: "6921729"
+    payload_off: "6921729"
+    optimistic: false
+    retain: true
+  - platform: mqtt
     name: "sonoffbasic"
     command_topic: "cmnd/sonoffbasic1/power"
     state_topic: "stat/sonoffbasic1/POWER"

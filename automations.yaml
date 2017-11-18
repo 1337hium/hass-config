@@ -373,8 +373,8 @@
       entity_id: binary_sensor.switch_158d000125652d
       click_type: long_click_press
   action:
-    service: light.toggle
-    entity_id: light.bett_led
+    service: switch.toggle
+    entity_id: switch.bett_led_hinten
 
 
 - id: michu_schlafzimmer
@@ -410,8 +410,8 @@
     event_type: click
     platform: event
   action:
-    service: light.toggle
-    entity_id: light.bett_led
+    service: switch.toggle
+    entity_id: switch.bett_led_hinten
 
 - id: kueche
   alias: "K\xFCche"
