@@ -219,8 +219,8 @@
 - id: X-mas on
   alias: X-mas on
   trigger:
-  - platform: time
-    after: '17:30:00'
+    platform: time
+    at: '17:30:00'
   action:
     service: switch.turn_on
     data:
@@ -228,31 +228,31 @@
 - id: X-mas off
   alias: X-mas off
   trigger:
-  - platform: time
-    after: '22:30:00'
+    platform: time
+    at: '22:30:00'
   action:
-    service: switch.turn_off
-    data:
-      entity_id: switch.sonoff_husli
+   - service: switch.turn_off
+     data:
+       entity_id: switch.sonoff_husli
 
 - id: X-mas on1
   alias: X-mas on1
   trigger:
-  - platform: time
-    after: '05:30:00'
+    platform: time
+    at: '05:30:00'
   action:
-    service: switch.turn_on
-    data:
-      entity_id: switch.sonoff_husli
+   -  service: switch.turn_on
+      data:
+        entity_id: switch.sonoff_husli
 - id: X-mas off1
   alias: X-mas off1
   trigger:
-  - platform: time
-    after: '08:00:00'
+    platform: time
+    at: '08:00:00'
   action:
-    service: switch.turn_off
-    data:
-      entity_id: switch.sonoff_husli
+    - service: switch.turn_off
+      data:
+        entity_id: switch.sonoff_husli
 ################################################################
 #     GEO STUFF                                                #
 ################################################################
