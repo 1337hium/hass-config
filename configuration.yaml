@@ -24,8 +24,8 @@ frontend:
       primary-color: "#d32f2f"
       primary-text-color: "#cfcfcf"
       secondary-background-color: "#131313"
-      sidebar-text_-_background: "#62717b" 
-      paper-card-header-color: "var(--paper-item-icon-color)" 
+      sidebar-text_-_background: "#62717b"
+      paper-card-header-color: "var(--paper-item-icon-color)"
       paper-item-icon-active-color: "var(--primary-color)"
       paper-item-icon_-_color: "var(--primary-text-color)"
       paper-listbox-color: "var(--primary-text-color)"
@@ -109,16 +109,16 @@ media_player:
   - platform: plex
 xiaomi_aqara:
  gateways:
-   - mac: 
+   - mac:
      key: !secret gw_michu
    - mac:
-     key: !secret gw_daniel 
+     key: !secret gw_daniel
 # interface: 192.168.1.102
 octoprint:
   host: 192.168.1.251
   api_key: !secret octo_key
 
-###########################################  
+###########################################
 ##Groups                                  #
 ###########################################
 group: !include groups.yaml
@@ -145,7 +145,7 @@ device_tracker:
 ##Zones                                   #
 ###########################################
 mqtt:
-  broker: mqtt.1337hium.ch 
+  broker: mqtt.1337hium.ch
   port: 1883
   username: !secret normal_user
   password: !secret normal_pw
@@ -153,7 +153,7 @@ mqtt:
 
 zone:
   name: Work
-  latitude: !secret work_lati 
+  latitude: !secret work_lati
   longitude: !secret work_longi
 
 zone 2:
@@ -164,8 +164,8 @@ zone 2:
   icon: mdi:account-multiple
 zone 3:
   name: Kaech
-  latitude: !secret kaech_lati 
-  longitude: !secret kaech_longi 
+  latitude: !secret kaech_lati
+  longitude: !secret kaech_longi
   radius: 20
 
 ###########################################
@@ -173,7 +173,7 @@ zone 3:
 ###########################################
 weather:
   - platform: openweathermap
-    api_key: !secret owm_key 
+    api_key: !secret owm_key
     latitude: !secret lati
     longitude: !secret longi
 
@@ -192,10 +192,10 @@ notify:
     user_key: !secret pushover_user
   - platform: pushbullet
     name: michu
-    api_key: !secret pushbullet_michu 
+    api_key: !secret pushbullet_michu
   - platform: pushbullet
     name: daniel
-    api_key: !secret pushbullet_daniel 
+    api_key: !secret pushbullet_daniel
   - name: HTML5
     platform: html5
     gcm_api_key: !secret html5_api
@@ -245,7 +245,7 @@ sensor:
   - platform: mqtt
     state_topic: "bruh2/mq2"
     name: "LPG"
-    unit_of_measurement: "ppm"    
+    unit_of_measurement: "ppm"
     value_template: '{{ value_json.lpg | round(1) }}'
   - platform: mqtt
     state_topic: "bruh2/mq2"
@@ -277,26 +277,26 @@ sensor:
     state_topic: "stat/sonoff/RESULT"
     name: "Sonoff US"
     value_template: '{{ value_json.POWER }}'
-  - platform: mqtt  
-    state_topic: "bruh/sensornode1"  
-    name: "SN1 PIR"  
-    value_template: '{{ value_json.motion }}' 
-  - platform: mqtt  
-    state_topic: "bruh/sensornode1"  
+  - platform: mqtt
+    state_topic: "bruh/sensornode1"
+    name: "SN1 PIR"
+    value_template: '{{ value_json.motion }}'
+  - platform: mqtt
+    state_topic: "bruh/sensornode1"
     name: "SN1 LDR"
     ##This sensor is not calibrated to actual LUX. Rather, this a map of the input voltage ranging from 0 - 1023.
-    unit_of_measurement: "LUX"  
-    value_template: '{{ value_json.ldr }}' 
-  - platform: mqtt  
-    state_topic: "bruh/sensornode1"  
-    name: "SN1 Humidity"  
-    unit_of_measurement: "%"  
-    value_template: '{{ value_json.humidity | round(1) }}'  
-  - platform: mqtt  
-    state_topic: "bruh/sensornode1"  
-    name: "SN1 Temperature"  
-    unit_of_measurement: "°C"  
-    value_template: '{{ value_json.temperature | round(1) }}'  
+    unit_of_measurement: "LUX"
+    value_template: '{{ value_json.ldr }}'
+  - platform: mqtt
+    state_topic: "bruh/sensornode1"
+    name: "SN1 Humidity"
+    unit_of_measurement: "%"
+    value_template: '{{ value_json.humidity | round(1) }}'
+  - platform: mqtt
+    state_topic: "bruh/sensornode1"
+    name: "SN1 Temperature"
+    unit_of_measurement: "°C"
+    value_template: '{{ value_json.temperature | round(1) }}'
   - platform: mqtt
     state_topic: "bruh/sensornode1"
     name: "SN1 Real Feel"
@@ -381,7 +381,7 @@ sensor:
         icon_template: '{%- if is_state("sensor.battery_mogang", "unknown") %}mdi:battery-unknown{%- elif is_state_attr("binary_sensor.motion_sensor_158d000155e030", "battery_status", "Charging") %}mdi:battery-charging{%- elif  states.binary_sensor.motion_sensor_158d000155e030.attributes.battery_level <= 5 %}mdi:battery-outline{%- elif states.binary_sensor.motion_sensor_158d000155e030.attributes.battery_level >= 95 %}mdi:battery{% else %}mdi:battery-{{(states.binary_sensor.motion_sensor_158d000155e030.attributes.battery_level|float / 10)|round*10}}{%- endif %}'
 
   - platform: wunderground
-    api_key: !secret wunder_api 
+    api_key: !secret wunder_api
     lang: DL
     monitored_conditions:
       - alerts
@@ -481,7 +481,7 @@ scene:
             state: on
             transition: 2
             brightness: 255
-            rgb_color: [255, 255, 255]  
+            rgb_color: [255, 255, 255]
         light.Mitte_Rechts:
             state: on
             transition: 2
@@ -581,7 +581,7 @@ scene:
     entities:
         light.Schlafzimmer:
             state: on
-            transition: 15 
+            transition: 15
             brightness: 255
 #            rgb_color: [255, 255, 255]
 sensor 6:
@@ -590,7 +590,7 @@ sensor 6:
     api_key: !secret html5_api
     origin: zone.home
     destination: zone.work
-  
+
   - platform: google_travel_time
     name: Work To Home
     api_key: !secret html5_api
@@ -600,7 +600,7 @@ vacuum:
   - platform: xiaomi_airpurifier
     name: 'Michus Air Purifier 2'
     host: 192.168.1.215
-    token: !secret purifier_token 
+    token: !secret purifier_token
 fan:
   - platform: xiaomi_airpurifier
     name: 'Michus Air Purifier 2'
@@ -646,6 +646,15 @@ switch:
     name: "sonoff_buero"
     command_topic: "cmnd/sonoff_buero/power"
     state_topic: "stat/sonoff_buero/POWER"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    retain: true
+    optimistic: false
+  - platform: mqtt
+    name: "sonoff_hüsli"
+    command_topic: "cmnd/sonoffbasic2/power"
+    state_topic: "stat/sonoffbasic2/POWER"
     qos: 1
     payload_on: "ON"
     payload_off: "OFF"
@@ -761,8 +770,8 @@ input_select: !include input_select.yaml
 
 google_assistant:
   project_id: hass-55f48
-  client_id: !secret assistant_id 
-  access_token: !secret assistant_token 
+  client_id: !secret assistant_id
+  access_token: !secret assistant_token
   exposed_domains:
     - switch
     - light
