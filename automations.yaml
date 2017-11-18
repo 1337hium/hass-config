@@ -75,8 +75,8 @@
     entity_id: sensor.sn1_pir
     to: motion
   - platform: state
-    entity_id: sensor.sn2_pir
-    to: motion
+    entity_id: binary_sensor.motion_sensor_158d00014dc1db
+    to: 'on'
   - platform: mqtt
     topic: 1home/433toMQTT
     payload: '6003929'
