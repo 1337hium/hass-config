@@ -8,6 +8,7 @@ homeassistant:
   customize: !include customize.yaml
 map:
 frontend:
+  javascript_version: latest
   themes:
     dark:
       primary-color: black
